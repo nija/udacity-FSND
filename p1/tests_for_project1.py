@@ -27,7 +27,9 @@ def test_object_str_output():
     print "test_object_str_output:\n"
     print "created a"
     print a
-    assert a.__str__() == "MovieMetadata object with state: title:Movie Title comment:Movie comment poster_image_url:http://box_art.png trailer_youtube_url:http://youtube.url"
+    assert a.__str__() == \
+        "MovieMetadata object with state: title:Movie Title comment:Movie comment \
+        poster_image_url:http://box_art.png trailer_youtube_url:http://youtube.url"
 
 def test_object_repr_output():
     """TODO: Need to figure out how to mock-up some number of digits regex for this test.
@@ -37,7 +39,9 @@ def test_object_repr_output():
 #   a = MovieMetadata("Movie Title", "Movie comment", http://box_art.png", "https://youtube.url")
 #   print "created a"
 #   print "%s" % (a.__repr__())
-#   assert a.__repr__() == "MovieMetadata 4325376592 < title:Movie Title comment:Movie comment poster_image_url:http://box_art.png trailer_youtube_url:http://youtube.url >"
+#   assert a.__repr__() == \
+        # "MovieMetadata 4325376592 < title:Movie Title comment:Movie comment \
+        # poster_image_url:http://box_art.png trailer_youtube_url:http://youtube.url >"
     pass
 
 def test_create_movie_tiles_content():
