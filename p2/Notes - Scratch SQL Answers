@@ -1,0 +1,137 @@
+Scratch SQL Answers
+
+select diet.food, count(*) as number
+from animals 
+join diet on animals.species = diet.species
+group by diet.food
+having number = 1;
+
+
+select animals.species, count(*) as number
+from animals 
+join diet on animals.species = diet.species
+group by animals.species;
+
+
+
+# Find the one food that is eaten by only one animal.
+#
+# The animals table has columns (name, species, birthdate) for each individual.
+# The diet table has columns (species, food) for each food that a species eats.
+
+QUERY = '''
+select animals.name, animals.species, diet.food, count(*) as number
+from animals 
+join diet on animals.species = diet.species
+group by diet.food
+having number = 1;
+'''
+
+
+select diet.food, count(*) as number
+from animals 
+join diet on animals.species = diet.species
+group by diet.food
+having number = 1;
+
+
+# List all the taxonomic orders, using their common names, sorted by the number of
+# animals of that order that the zoo has.
+#
+# The animals table has (name, species, birthdate) for each individual.
+# The taxonomy table has (name, species, genus, family, t_order) for each species.
+# The ordernames table has (t_order, name) for each order.
+#
+# Be careful:  Each of these tables has a column "name", but they don't have the
+# same meaning!  animals.name is an animal's individual name.  taxonomy.name is
+# a species' common name (like 'brown bear').  And ordernames.name is the common
+# name of an order (like 'Carnivores').
+
+select taxonomy.name, taxonomy.species, taxonomy.t_order, ordernames.t_order, ordernames.name, animals.species, animals.name
+from ordernames 
+   join taxonomy on ordernames.t_order = taxonomy.t_order
+   join animals on ordernames.name = taxonomy.
+
+
+with animals_crossref as (
+   select * from ordernames 
+   join animals.species=ordername.species
+   ), taxonomy_crossref as (
+   select * from ordernames 
+   join taxonomy.t_order=ordernames.t_order
+   )
+select taxonomy.name, taxonomy.species, taxonomy.t_order, ordernames.t_order, ordernames.species, animals.species, count(*)
+from ordername, taxonomy, animals
+group by animals.species
+
+
+SELECT animal.ID, breed1.BreedName as BreedName1, breed2.BreadName as BreadName2 
+FROM animal 
+   LEFT JOIN breed as breed1 ON animal.breedID=breed1.ID 
+   LEFT JOIN breed as breed2 ON animal.breedID=breed2.ID 
+WHERE animal.ID='7';
+
+
+select ordernames.t_order, taxonomy.t_order, ordernames.name, taxonomy.species, animals.species, animals.name
+from ordernames
+join animals on animals.species=taxonomy.species
+join taxonomy on taxonomy.t_order=ordernames.t_order
+group by 
+
+select ordernames.t_order, taxonomy.t_order, ordernames.name, taxonomy.species, animals.species, count(*) as number
+from ordernames
+join animals on animals.species=taxonomy.species
+join taxonomy on taxonomy.t_order=ordernames.t_order
+group by number
+
+
+select ordernames.name, taxonomy.species, animals.species, count(*) as number
+from animals
+join taxonomy on animals.species=taxonomy.species
+join ordernames on taxonomy.t_order=ordernames.t_order
+group by ordernames.t_order
+
+
+
+select ordernames.name, count(*) as number
+from animals
+join taxonomy on animals.species=taxonomy.species
+join ordernames on taxonomy.t_order=ordernames.t_order
+group by ordernames.t_order
+
+select animals.name, count(*) as number
+from animals
+join taxonomy on animals.species=taxonomy.species
+join ordernames on taxonomy.t_order=ordernames.t_order
+group by ordernames.t_order
+
+
+select taxonomy.name, count(animals.species) as number
+from animals
+join taxonomy on animals.species=taxonomy.name
+join ordernames on taxonomy.t_order=ordernames.t_order
+group by taxonomy.t_order
+order by number desc
+
+
+
+select taxonomy.name, count(taxonomy.t_order) as number
+from animals
+join taxonomy on animals.species=taxonomy.name
+join ordernames on taxonomy.t_order=ordernames.t_order
+group by taxonomy.t_order
+order by number desc
+
+
+select ordernames.name, count(taxonomy.t_order) as number
+from animals
+join taxonomy on animals.species=taxonomy.name
+join ordernames on taxonomy.t_order=ordernames.t_order
+group by taxonomy.t_order
+order by number desc
+
+
+
+
+
+

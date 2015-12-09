@@ -64,5 +64,7 @@ def create_movielist():
 
     return movielist
 
+print create_movielist()
+
 # Call the function to open the webpage
-open_movies_page(create_movielist())
+#open_movies_page(create_movielist())

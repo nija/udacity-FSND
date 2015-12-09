@@ -1,0 +1,28 @@
+Relational DB Cheatsheet
+-------------------------
+
+1. List tables and columns
+
+PostgreSQL:   \dt and \d $tablename
+MySQL:        show tables and describe $tablenames
+SQLite:       .tables and .schema $tablename
+
+2. Indecies help with speed
+
+3. WHERE - filters on source tables
+   HAVING - filters on the result (ie after a count or other aggregation)
+
+4. General structure:
+   import $library
+   $connection = $library.connect($dbname)  # OR $connection = psycopg2.connect("dbname=$DB_name")
+   $cursor = $connection.cursor()
+   $cursor.execute("$sql_statement")
+   $results = $cursor.fetchall()      # other option is fetchone()
+   $connection.commit()                   # commits / rollbacks; only needed for inserts / deletes / changing db state
+   print $results
+   $connection.close()                 # if the commit statement is omitted, the close will roll back changes
+
+5. Atomicity
+
+
+
