@@ -19,21 +19,13 @@ def GetAllPosts():
       pointing to the post content, and 'time' key pointing to the time
       it was posted.
     '''
-    #posts = [{'content': str(row[1]), 'time': str(row[0])} for row in DB_conn]
-    #posts.sort(key=lambda row: row['time'], reverse=True)
-    print "Creating a cursor"
     db_cursor = db_conn.cursor()
-    print "cursor created %s" % db_cursor
-    print "Reading in values"
-    db_cursor.execute("select content, time from posts order by time;")
-    print "values read from db"
-    posts = db_cursor.fetchall()
+    db_cursor.execute("select content, time from public.posts order by time;")
     results_dict=[]
-    for post in posts:
-      results_dict.append([('content', str(post[0]), ('time', datetime(post[1])))])
-    #print "posts are %s" % posts
-    #print posts
-
+    posts = db_cursor.fetchall()
+ #   results_dict = [{'content': str(row[1]), 'time': str(row[0])} for row in posts]
+    for row in posts:
+          results_dict.append({'content': str(row[1]), 'time': str(row[0])})
     return results_dict
 
 ## Add a post to the database.
