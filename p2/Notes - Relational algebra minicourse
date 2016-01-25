@@ -1,0 +1,191 @@
+Notes - Relational algebra minicourse
+
+A relational algebra query (expression) on the set of relations produces a relation as a result
+
+ex. Relation_name([Relation_columns_or_attributes])
+	College(cName,state,enrollment)
+	Student(sID,sName,GPA,HS)
+	Apply(sID,cName,major,decision)
+
+
+
+
+SELECT
+
+σ == sigma == select
+select == picks certain rows
+
+General Form:
+σ(Conditional_expression) (Any_relational_expression) = Subset_of_Relation
+ex. σ(GPA > 3.7) Student
+
+PROJECT
+
+π == pi == project
+project == picks certain columns
+
+General Form:
+π([Column_names]) (Any_relational_expression) = Subset_of_Relation_with_only selected_columns
+ex. π(sID,decision) Apply
+
+Can compose operators, can pick only some of the rows and some of the columns
+
+Remember that relational queries produce relations
+
+ex. π(sID,sName) (σ(GPA > 3.7) Student)
+
+
+Quiz 1:
+"Two selection operators in a row can always be replaced by a single selection operator whose condition is the "and" of the two selection conditions. If there are two projection operators in a row, the attribute list of the second (outer) projection must be a subset of the attribute list of the first (inner) projection. Thus, the first projection can be removed without changing the result of the expression."
+
+
+DUPLICATES
+
+π(major,decision) Apply
+
+SQL - based on multi-sets (aka bags); dups only explicitly eliminated
+Relational Algebra - sets; dups implicitly eliminated
+
+
+CROSS-PRODUCT (CARTISIAN PRODUCT)
+"It takes two relations and glues them together so that the schema of the result is the union of the schemas of the two relations, and the contents of the result are every combination of tuples from those relations."
+
+Student x Apply = [student_sID,sName,GPA,HS,Apply_sID,cName,major,decision]
+
+π(sName,GPA) (σ((Student.sID=Apply.sID) ^ (HS>1000) ^ (major = 'cs') ^ (decision = 'R'))  (Student x Apply))
+
+* Smush everything together and carve off the pieces you don't want
+
+
+
+NATURAL JOIN
+
+⋈ == natural join == match up all columns that are equal and eliminate duplicate values of columns == "performs a cross-product and a. enforces equality won all attributes with the same name, b. eliminates one copy of duplicate attributes (aka dedupes columns)"
+natural join is a binary operator
+
+Does not add any expressive power:
+E(1) ⋈ E(2) is exactly equiv to π(E(1) ⋃ E(2)) σ(expression_of_conditionals) (E(1) x E(2))
+
+ex. π(sName,GPA) ( σ((HS > 1000) ^ (major = 'cs') ^ (decision = 'R') ^ (enr > 20000)) (Student ⋈ (Apply ⋈ College)))
+
+
+THETA JOIN - Basic DBMS operation, often just called a join
+
+Does not add any expressive power:
+θ == theta == expression of conditionals
+E(1) ⋈θ E(2) is exactly equiv to σ(θ) ( E(1) x E(2) )
+
+
+
+UNION
+
+⋃ == union 
+union == vertical combinations for relations
+
+π(cName) College ⋃ π(sName) Student   # Still need to normalize the schema for each to do the ⋃ operator
+
+
+DIFFERENCE
+
+- == difference
+
+Using a join back aka cross-product (sName, sID of students who didn't apply to any colleges):
+π(sName) ((π(sID) Student - π(sID) Apply) ⋈ Student)  
+
+
+
+INTERSECTION
+⋂ == intersection
+
+Intersection doesn't add expressive power
+
+π(cName) College ⋂ π(sName) Student # Still need to normalize the schema for each to do the ⋂ operator
+
+E(1) ⋂ E(2) is exactly equiv to E(1) - ( E(1) - E(2) )
+ex.
+e1 = [ 1,2,3,4,5 ]
+e2 = [ 3,5,7,9 ]
+e1 ⋂ e2 = [ 3,5 ]
+
+E(1) ⋂ E(2) is exactly equiv to E(1) ⋈ E(2)
+
+
+
+cross-product, natural join - combines relations horizontally
+
+
+student names and college names where the high school is larger than the enrollment, the college is in California, and the major is cs
+
+all college names from College - college names from the unique combination of (student id column for rows where the GPA > 3.5 from Student AND student id columns for rows where major = 'cs' from Apply) from Apply
+
+all students who have gpa > 3.5 and major in cs
+
+
+
+RENAME
+ρ == rho == reassigns the schema in the result of E starting with relation R with attributes A1..An
+
+General Form: ρ(R(A1..An)) (E)
+Abbreviations:
+1. ρ(R) (E)
+2. ρ(A1..An) (E)
+
+
+Use case 1: unify schemas for set operators
+ρ(C(name)) (π(cName) College) ⋃ ρ(C(name)) (π(sName) Student)
+
+Use case 2: disambiguation for self-joins
+ex. pairs of colleges in the same state (horizontal join)
+	1. σ(state1=state2) (ρ(C1(name1,state1,enr1)) (College) x ρ(C2(name2,state2,enr2)) (College))
+	2. σ(name1<name2) ρ(C1(name1,state,enr1)) (College) ⋈ ρ(C2(name2,state,enr2)) (College)    # Takes advantage of the natural join's inherent equality enforcement; takes advantage of the ordering with < to create unique pairs
+		Alternate notation:
+		C1 := ρ(c1,s,s1) College
+		C2 := ρ(c2,s,s2) College
+		CP := C1 ⋈ C2
+		Ans := σ(n1<n2) CP
+
+GPAs of students applying to CS in CA, tree notation:
+
+
+		π(GPA)
+		   |
+		σ(state='CA' ^ major='cs')
+		   |
+  _________⋈___________
+  |        |          |
+College   Student   Apply
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

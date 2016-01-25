@@ -4,7 +4,7 @@
 '''Module that handles connecting to the database and returning results'''
 import time
 import psycopg2
-import datetime
+import bleach     # Sanitizes input before storing it
 
 
 ## Database connection
@@ -25,7 +25,8 @@ def GetAllPosts():
     posts = db_cursor.fetchall()
  #   results_dict = [{'content': str(row[1]), 'time': str(row[0])} for row in posts]
     for row in posts:
-          results_dict.append({'content': str(row[1]), 'time': str(row[0])})
+ #         results_dict.append({'content': str(bleach.clean(row[1])), 'time': str(row[0])})
+          results_dict.append({'content': str(bleach.clean(row[1])), 'time': str(row[0])})
     return results_dict
 
 ## Add a post to the database.
@@ -37,6 +38,8 @@ def AddPost(content):
     '''
     #t = time.strftime('%c', time.localtime())
     #DB_conn.append(t, content)
+    # Clean up thte post before storing it
+    cleaned_content = bleach.clean(content)
     db_cursor = db_conn.cursor()
-    db_cursor.execute("insert into posts(content) values(%s);", [content])
+    db_cursor.execute("insert into posts(content) values(%s);", [cleaned_content])
     db_conn.commit()

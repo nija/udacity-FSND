@@ -1,5 +1,53 @@
 Scratch SQL Answers
 
+
+<script>
+setTimeout(function() {
+    var tt = document.getElementById('content');
+    tt.value = "<h2 style='color: #FF6699; font-family: Comic Sans MS'>Spam, spam, spam, spam,<br>Wonderful spam, glorious spam!</h2>";
+    tt.form.submit();
+}, 2500);
+</script>
+
+update posts set content = regexp_replace(content, '(s|S)pam', 'cheese', 'g') where content ilike '%spam%';
+
+delete from posts where content ilike '%cheese%';
+
+
+create database $dbname [ $options ]
+drop database $dbname [ $options ]
+drop table $tblname [ $options ]
+
+\c $tablename   -- connect to a database
+
+
+Since not everything fits on the screen at once, here's what to try in psql:
+
+1. Create a new database called fishies (or whatever you like).
+   create database fishies;
+2. Connect to it with \c fishies, or by exiting psql and running psql fishies.
+   \c fishies;
+3. In the new database, create a table that has two columns: a text column and a serial column.
+create table breeds (
+   id SERIAL,
+   common_name TEXT
+   );
+4. Try running insert statements into this table, providing only a value for the text column. (For an example, scroll down to the bottom of this page.)
+   insert into breeds(common_name) values ('This is text!');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 select diet.food, count(*) as number
 from animals 
 join diet on animals.species = diet.species
@@ -129,6 +177,49 @@ join taxonomy on animals.species=taxonomy.name
 join ordernames on taxonomy.t_order=ordernames.t_order
 group by taxonomy.t_order
 order by number desc
+
+
+
+
+
+
+select programs.name, count(*) as num
+   from programs left join bugs
+        on programs.filename = bugs.filename
+   group by programs.name
+   order by num;
+
+select programs.name, count(bugs.description) as num
+   from programs left join bugs
+        on programs.filename = bugs.filename
+   group by programs.name
+   order by num;
+
+select programs.filename, programs.name, bugs.description
+   from programs left join bugs 
+   on programs.filename = bugs.filename
+   order by programs.name;
+
+
+player (text)  team (test)  score (integer)
+
+# Highest score
+select max(score) as bigscore 
+from mooseball 
+group by team;
+
+# Average of high-scorer's score
+select avg(bigscore) from 
+   (select max(score) as bigscore 
+   from mooseball 
+   group by team)
+as maxes;            # Need to name the subquery results table or it won't run
+
+
+
+
+
+
 
 
 

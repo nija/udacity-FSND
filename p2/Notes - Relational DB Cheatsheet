@@ -26,3 +26,156 @@ SQLite:       .tables and .schema $tablename
 
 
 
+Normalized Design:
+------------------
+1. Every row has teh same number of columns
+
+2. There is a unique key (like topic), and everything in a row says something about the key. Sometimes more than one column can be the key.
+
+3. Facts that don't relate to the key belong in different tables
+
+4. Tables should not imply relationships that do not exists.
+	* Corollary - Tables only imply relationships that do exist?
+
+
+Relationships:
+references provide referential integrity - columns that are supposed to refer to each other are guarenteed to do so
+This is also known as a Foriegn Key.
+ex. To have the sales.sku column reference the products.sku column:
+create table sales (
+	sku text references products (sku),
+	sale_date date,
+	count integer);
+
+
+
+
+
+Joins:
+
+Left and right (outer) joins - The words “left” and “right” refer to the tables to the left and right of the join operator. A left join returns all the common rows, plus the rows where the left table has an entry but the right table doesn’t. A right join does the same but for the right table.
+ex.
+# create table programs (
+#    name text,
+#    filename text
+# );
+# create table bugs (
+#    filename text,
+#    description text,
+#    id serial primary key
+# );
+Inner join:
+select programs.name, count(*) as num
+   from programs join bugs
+        on programs.filename = bugs.filename
+   group by programs.name
+   order by num;
+
+Left join:
+
+
+Right join:
+
+
+
+Inner join:
+A regular (inner) join returns only those rows where the two tables have entries matching the join condition.
+ex.
+select a.id, b. id, a.building, a.room
+from residences as a,
+	 residences as b,
+where
+	a.building = b.building
+	and a.room = b.room
+	and a.id < b.id 			# < instead of != ensures the lower number of the pair always comes first
+order by a.building, a.room;
+ex.
+# create table products(
+#	sku primary key,
+#	price integer,
+#	name text
+# );
+# create table sales(
+#	sku text references products (sku),
+#	sale_date text,
+#	count integer
+# );
+ex.
+# Inner join - This query will give us a row for every product in both the products and sales table
+select products.name, products.sku, count(*) as num
+  from products join sales
+    on products.sku = sales.sku
+  group by products.sku;
+# Left join - This query will give us a row for every product in the products table, even the ones that have no sales in the sales table.
+select products.name, products.sku, count(sales.sku) as num
+  from products left join sales
+    on products.sku = sales.sku
+  group by products.sku;
+# Right join - This query will give us a row for every sale in the sales table, even the ones that have no product in the product table.
+select products.name, products.sku, count(sales.sku) as num
+  from products right join sales
+    on products.sku = sales.sku
+  group by products.sku;
+
+
+Counting:
+select count(*) from animals; 
+-- returns the number of animals in the zoo
+
+select count(*) from animals where species = ‘gorilla’; 
+-- returns the number of gorillas
+
+select species, count(*) from animals group by species; 
+-- returns each species’ name and the number of animals of that species
+
+
+
+The result of a query is always a table
+
+# Can also use subqueries as a comparision
+1. select name, weight 
+from players 
+where weight < (
+	select avg(weight) as av from players);
+2. select name, weight 
+from players, (
+	select avg(weight) as av from players) as subq 
+where weight < av;
+
+
+
+Views:
+A view is a select query stored in the database in a way that lets you uase it like a table
+	create view $viewname as select...
+
+create view course_size as 
+select course_id, count(*) as num 
+from enrollment
+group by course_id;
+
+In Postgresql, devs can update/delete rows in a view if the view does not use joins, aggregations, or other functions. The change to the view WILL update the underlaying table
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
