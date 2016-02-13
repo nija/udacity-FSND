@@ -157,11 +157,77 @@ College   Student   Apply
 
 
 
+SEMIJOIN
+⋉ ==
+"Semijoin is the same as natural join, except only attributes of the first relation are returned in the result. For example, if we have relations Student(ID, name) and Enrolled(ID, course), and not all students are enrolled in courses, then the query "Student ⋉ Enrolled" returns the ID and name of all students who are enrolled in at least one course. In the general case, E1 ⋉ E2 returns all tuples in the result of expression E1 such that there is at least one tuple in the result of E2 with matching values for the shared attributes."
+
+does not add expressive power; can be rewritten as 
+E1 ⋉ E2 = π(schema(E1)) (E1 ⋈ E2)
+
+
+ANTIJOIN
+"Antijoin is the converse of semijoin: E1 ▷ E2 retuns all tuples in the result of expression E1 such that there are no tuples in the result of E2 with matching values for the shared attributes. For example, the query "Student ▷ Enrolled" returns the ID and name of all students who are not enrolled in any courses."
+
+does not add expressive power; can be rewritten as 
+E1 ▷ E2 = E1 - (π(schema(E1)) (E1 ⋈ E2)) = E1 - (E1 ⋉ E2)
 
 
 
 
 
+
+
+
+
+
+
+
+
+--- http://www.cs.arizona.edu/~mccann/research/divpresentation.pdf ---
+
+Division identifies the attribute values from a relation that are found to be paired with all of the values from another relation.
+
+General form: α ÷ β = (π(A−B) (α)) − (π (A−B)) ((π(A−B) (α)) × β) − α)
+                                   3                         1    2
+Ignoring the projections, there are just three steps:
+1. Compute all possible attribute pairings
+2. Remove the existing pairings
+3. Remove the non–answers from the possible
+answers
+
+ex.
+"Find the sno values of the suppliers that supply all parts of weight equal to 17"
+General form: α ÷ β = (π(A−B) (α)) − (π (A−B)) ((π(A−B) (α)) × β) − α)
+p:	 pno pname color weight city
+spj: sno pno jno qty
+need schema α: sno pno; β: pno to answer the question
+α ← π(sno,pno) (SPJ)) 
+β ← π(pno) (σ(weight=17) (P))
+
+
+We need to know that in SQL:
+	EXCEPT means difference (–)
+	a join without the WHERE clause produces a
+Cartesian Product
+	nested SELECTs sometimes need an alias
+		(SELECT ...) as alias ...
+
+Strategy: Find the values that do not belong in the answer, and remove them from the list of possible answers. In our P–SPJ example, the list of possible answers is just the available sno values in α
+
+
+Ex. SQL translation
+General form: α ÷ β = (π(A−B) (α)) − (π (A−B)) ((π(A−B) (α)) × β) − α)
+select distinct sno from spj
+except
+select sno
+	from ( select sno, pno
+			from (select sno from spj) as t1,
+				(select pno from p where weight=17) as t2
+		except
+		select sno, pno from spj
+		) as t3;
+where α would be select sno, pno from spj
+and β is select pno from p where weight=17
 
 
 

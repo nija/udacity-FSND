@@ -28,7 +28,7 @@ SQLite:       .tables and .schema $tablename
 
 Normalized Design:
 ------------------
-1. Every row has teh same number of columns
+1. Every row has the same number of columns
 
 2. There is a unique key (like topic), and everything in a row says something about the key. Sometimes more than one column can be the key.
 

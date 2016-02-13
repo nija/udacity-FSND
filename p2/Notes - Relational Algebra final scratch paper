@@ -1,0 +1,747 @@
+
+R(A,B)
+A	B
+1	a
+7	t
+2	g
+4	c
+9	t
+
+S(B,C,D)
+B	C	D
+c	5	6
+a	7	8
+t	8	9
+
+⋈θ where R.B = S.B AND R.A < S.C
+
+(A, R.B, S.B, C, D)
+
+⋈θ where R.B = S.B
+A 	R.B		S.B		C 	D
+1	a 		a 		7	8
+7	t 		t 		8	9
+2	g 		
+4	c 		c 		5	6
+9	t 		t 		8	9
+
+⋈θ where R.B = S.B AND R.A < S.C
+A 	R.B		S.B		C 	D
+1	a 		a 		7	8
+7	t 		t 		8	9
+4	c 		c 		5	6
+
+
+
+
+Consider a relation R(A,B) with r tuples, all unique within R, and a relation S(B,C) with s tuples, all unique within S. Let t represent the number of tuples in R natural-join S. Which of the following triples of values (r,s,t) is possible?
+
+R(A,B)  unique
+r0
+...
+rn
+
+S(B,C)  unique
+s0
+...
+sn
+
+R ⋈ S has t0...tn tuples
+
+
+
+
+
+
+
+R(A,B)
+A	B
+1	2
+3	4
+5	6
+
+S(B,C,D)
+B	C	D
+2	4	6
+4	6	8
+4	7	9
+
+
+Compute the natural join of R and S. Assume each tuple has schema (A,B,C,D).
+
+R ⋈ S
+
+A 	B 	C 	D 
+1	2	4	6
+3	4	6	8
+3	4	7	9
+
+
+
+
+
+R(A,B)
+A	B
+1	2
+3	4
+5	6
+
+
+S(B,C,D)
+B	C	D
+2	4	6
+4	6	8
+4	7	9
+
+
+Compute the theta-join of R and S with the condition R.A < S.C AND R.B < S.D. Assume each tuple has schema (A, R.B, S.B, C, D).
+
+⋈θ
+A 	R.B 	S.B 	C 	D 
+1	2		2		4	6
+3	4		4		6	8
+3	4		4		7	9
+
+
+⋈θ where R.A < S.C
+A 	R.B 	S.B 	C 	D 
+1	2		2		4	6
+3	4		4		6	8
+3	4		4		7	9
+
+
+
+⋈θ where R.A < S.C AND R.B < S.D
+A 	R.B 	S.B 	C 	D 
+1	2		2		4	6
+3	4		4		6	8
+3	4		4		7	9
+
+
+
+R(A,B,C)
+A	B	C
+1	2	3
+4	2	3
+4	5	6
+2	5	3
+1	2	6
+
+Compute the projection π C,B (R).
+"π([Column_names]) (Any_relational_expression) = Subset_of_Relation_with_only selected_columns
+ex. π(sID,decision) Apply"
+
+C 	B
+3	2
+3	2
+6	5
+3	5
+6	2
+
+
+
+R(A,B,C)
+A	B	C
+1	2	3
+4	2	3
+4	5	6
+2	5	3
+1	2	6
+
+S(A,B,C)
+A	B	C
+2	5	3
+2	5	4
+4	5	6
+1	2	3
+
+Compute the union of R and S
+
+"⋃ == union 
+union == vertical combinations for relations"
+
+R ⋃ S
+A 	B 	C
+1	2	3
+4	2	3
+4	5	6
+2	5	3
+1	2	6
+2	5	4
+
+
+
+
+
+
+R(A,B,C)
+A	B	C
+1	2	3
+4	2	3
+4	5	6
+2	5	3
+1	2	6
+
+S(A,B,C)
+A	B	C
+2	5	3
+2	5	4
+4	5	6
+1	2	3
+
+
+Compute R ⋂ S
+A 	B 	C 
+1	2	3
+4	5	6
+2	5	3
+
+
+
+R(A,B,C)
+A	B	C
+1	2	3
+4	2	3
+4	5	6
+2	5	3
+1	2	6
+
+
+S(A,B,C)
+A	B	C
+2	5	3
+2	5	4
+4	5	6
+1	2	3
+
+Compute (R - S) ⋃ (S - R)
+
+R - S
+A 	B 	C
+4	2	3
+1	2	6
+
+
+
+S - R
+A 	B 	C
+2	5	4
+
+
+
+
+(R - S) ⋃ (S - R)
+A 	B 	C
+4	2	3
+1	2	6
+2	5	4
+
+==================== Exercises ===================
+Q1: Find all pizzas eaten by at least one female over the age of 20:
+Answer: \project_{pizza} (\select_{age > 20 and gender = 'female'} (Person \join Eats));
+σ(Person.age > 20 AND Person.gender = 'female')
+
+(pizza) Eats ⋈ (name, age, gender) Person
+
+where Person.age > 20 and Person.gender = 'female'
+
+Person (where Person.age > 20 AND person.gender = 'female')
+
+select Eats.pizza 
+from Person, Eats
+join Person.name on Eats.name
+where Person.age > 20 AND Person.gender = 'female';
+
+π(pizza) (σ(Person.name=Eats.name) σ(Person.age>20 and Person.gender='female') x Eats)
+
+\project_{pizza} (\select_{Person.gender='female' and Person.age>20} (Person \join Eats))
+
+  Π customer-name (σ Borrower.loan-number=Loan.loan-number (σ branch-name=”Perryridge” (Borrower X Loan)))
+
+\sqlexec_{select pizza from Eats join Person.name on Eats.name where age > 20 AND gender = 'female';};
+
+Person
+name	age	gender
+Amy	16	female
+Ben	21	male
+Cal	33	male
+Dan	13	male
+Eli	45	male
+Fay	21	female
+Gus	24	male
+Hil	30	female
+Ian	18	male
+
+Eats
+name	pizza
+Amy	mushroom
+Amy	pepperoni
+Ben	cheese
+Ben	pepperoni
+Cal	supreme
+Dan	cheese
+Dan	mushroom
+Dan	pepperoni
+Dan	sausage
+Dan	supreme
+Eli	cheese
+Eli	supreme
+Fay	mushroom
+Gus	cheese
+Gus	mushroom
+Gus	supreme
+Hil	cheese
+Hil	supreme
+Ian	pepperoni
+Ian	supreme
+
+
+T(name pizza)
+Hil		cheese
+Hil		supreme
+Fay		mushroom
+
+
+
+\project_{pizza} (
+      ((\project_{name} Person)          // all people
+       \diff
+       (\project_{name}                  // people who frequent Dominos
+           \select_{pizzeria='Dominos'}
+                Frequents)
+      \join Eats));                       // join with Eats to find pizzas
+
+
+# finds all pizzas eaten by at least one person who does not frequent the 'Dominos' pizzeria
+\project_{pizza} (((\project_{name} Person) \diff (\project_{name} \select_{pizzeria='Dominos'} Frequents) \join Eats));
+
+===
+
+Q2: Find the names of all females who eat at least one pizza served by Straw Hat. (Note: The pizza need not be eaten at Straw Hat.) 
+Answer: \project_{name} ((\project_{pizza} ( \select_{ pizzeria='Straw Hat'} Serves )) \join ((\select_{gender='female'} Person) \join Eats));
+
+\project_{pizza} ( \select_{ pizzeria='Straw Hat'} Serves )
+
+(\select_{gender='female'} Person) \join Eats;
+
+\project_{name} ((\project_{pizza} ( \select_{ pizzeria='Straw Hat'} Serves )) \join ((\select_{gender='female'} Person) \join Eats));
+
+===
+
+Q3: Find all pizzerias that serve at least one pizza for less than $10 that either Amy or Fay (or both) eat. 
+Answer: \project_{pizzeria} ((\select_{ price < 10} Serves) \join (\project_{pizza} (\select_{name='Amy' or name='Fay'} Eats)));
+
+(\project_{pizza} (\select_{name='Amy' or name='Fay'} Eats))
+
+(\select_{ price < 10} Serves) \join (\project_{pizza} (\select_{name='Amy' or name='Fay'} Eats))
+
+\project_{pizzeria} ((\select_{ price < 10} Serves) \join (\project_{pizza} (\select_{name='Amy' or name='Fay'} Eats)));
+
+===
+
+Q4: Find all pizzerias that serve at least one pizza for less than $10 that both Amy and Fay eat. 
+Answer: 
+
+# (\project_{pizzeria} ((\select_{ price < 10} Serves) \join (\project_{pizza} (\select_{name='Amy' or name='Fay'} Eats))));
+
+(\project_{pizzeria} ((\select_{ price < 10} Serves) \join (\project_{pizza} (\select_{name='Amy'} Eats)))) \intersect (\project_{pizzeria} ((\select_{ price < 10} Serves) \join (\project_{pizza} (\select_{name='Fay'} Eats))))
+
+===
+
+Q5: Find the names of all people who eat at least one pizza served by Dominos but who do not frequent Dominos.
+Answer: (\project_{name} ((\project_{pizza} (\select_{ pizzeria='Dominos'} Serves)) \join Eats)) \diff ((\project_{name} Frequents) \intersect (\project_{name} (\select_{pizzeria='Dominos'} Frequents)));
+
+\project_{pizza} (\select_{pizzeria='Dominos'} Serves)
+
+# people who do not go to Dominos
+(\project_{name} Frequents) \diff (\project_{name} (\select_{pizzeria='Dominos'} Frequents));
+Amy
+Ben
+Cal
+Dan
+Eli
+Gus
+
+# people who eat at least one pizza served by Dominos, may not be at Dominos
+\project_{name} ((\project_{pizza} (\select_{ pizzeria='Dominos'} Serves)) \join Eats);
+Amy
+Ben
+Dan
+Eli
+Fay
+Gus
+Hil
+
+# intersection of people who do not go to Dominos, and people who eat at least one pizza served by Dominos
+(\project_{name} ((\project_{pizza} (\select_{ pizzeria='Dominos'} Serves)) \join Eats)) \diff ((\project_{name} Frequents) \intersect (\project_{name} (\select_{pizzeria='Dominos'} Frequents)));
+
+# \project_{name} (((\select_{pizzeria!='Dominos'} Frequents) \join Eats) \join (\project_{pizza} (\select_{pizzeria='Dominos'} Serves)));
+
+
+
+Fay Hil
+
+
+Eats \join Frequents;
+
+Amy
+Ben
+Dan
+Eli
+Gus
+
+===
+
+Q6: Find all pizzas that are eaten only by people younger than 24, or that cost less than $10 everywhere they're served. 
+Answer: ((\project_{pizza} ((\select_{age < 24} Person) \join Eats)) \diff (\project_{pizza} ((\select_{age >= 24} Person) \join Eats))) \union (\project_{pizza} (\select_{price < 10} Serves) \diff \project_{pizza} (\select_{price >= 10} Serves));
+
+\project_{pizza} ((\select_{age < 24} Person) \join Eats) ;
+cheese
+mushroom
+pepperoni
+sausage
+supreme
+
+
+
+(\select_{price <10} Serves)
+
+self-join
+a x b where
+a.pizza  b.price < 10
+
+
+(Person \join Eats) \join Serves;
+\project_{pizza, price, age} ((Person \join Eats) \join Serves);
+
+\project_{pizza, price} Serves
+
+cheese
+
+pizza that cost less than $10 everywhere they're served
+\project_{pizza} (\select_{price < 10} (for all Serves.pizzeria))
+\project_{pizzeria, pizza, price, age} (\select_{price < 10} (((Person \join Eats) \join Serves)) - (\project_{pizzeria} (\select_{price > 10} ((Person \join Eats) \join Serves))));
+
+pizzerias serving pizzas over 10
+\project_{pizzeria,price, pizza} (\select_{price > 10} ((Person \join Eats) \join Serves));
+
+\project_{pizza} (Serves \cross Serves);
+
+\project_{Serves1.pizza} \join_{Serves1.pizzeria = Serves2.pizzeria} \project_{Serves2.price}
+
+
+# Desperation
+\rename_{name1,age1,gender1} Person \cross \rename_{name2,age2,gender2} Person;
+
+# Maximum function
+\project_{value}(T)
+\diff
+\project_{value} (
+    \select_{value < value2}(
+      \project_{value}(T)
+      \cross
+      \rename_{value2}(\project_{value}(T))
+    )
+)
+
+\project_{pizza} (Serves)
+\diff
+\project_{pizza} (
+    \select_{pizza < pizza2}(
+      \project_{pizza} (Servers)
+      \cross
+      \rename_{pizza2} (\project_{pizza} (Serves))
+    )
+)
+
+
+
+
+# Maximum function
+(\project_{price} Serves) \diff (\project_{price} (\select_{price < price2} ((\project_{price} Serves) \cross (\rename_{price2} (\project_{price} (Serves))))));
+
+
+
+# Maximum function
+\project_{value}(T)
+\diff
+\project_{value} (
+    \select_{value < value2}(
+      \project_{value}(T)
+      \cross
+      \rename_{value2}(\project_{value}(T))
+    )
+)
+
+# Pizzas less than 10 everywhere
+\project_{pizza} ( 
+	\select_{price < 10} Serves ) 
+	\diff 
+	\project_{pizza} ( 
+		\select_{price >= 10} Serves)
+
+# Pizza eaten by only people younger than 24
+((\project_{pizza} ((\select_{age < 24} Person) \join Eats)) \diff (\project_{pizza} ((\select_{age >= 24} Person) \join Eats)));
+
+\project_{pizza} ((
+	\select_{age < 24} Person) 
+		\join Eats)
+	\diff
+	\project_{pizza} ((
+		\select_{age >= 24} Person)
+			\join Eats);
+
+
+
+((\project_{pizza} ((\select_{age < 24} Person) \join Eats)) \diff (\project_{pizza} ((\select_{age >= 24} Person) \join Eats))) \union (\project_{pizza} (\select_{price < 10} Serves) \diff \project_{pizza} (\select_{price >= 10} Serves));
+
+===
+
+Q7: Find the age of the oldest person (or people) who eat mushroom pizza. 
+Answer: (\project_{age} (\project_{age} (\select_{pizza='mushroom'} (Eats \join Person)))) \diff (\project_{age} (\select_{age < age2} (\project_{age} (\project_{age} (\select_{pizza='mushroom'} (Eats \join Person))) \cross \rename_{age2}(\project_{age} (\project_{age} (\select_{pizza='mushroom'} (Eats \join Person)))))));
+
+
+\project_{age} (\select_{pizza='mushroom'} (Eats \join Person));
+
+
+# Maximum function - works bc the second project returns all the values but the largest one. It does this because the side effect of the project(select value < value2) "deletes" the largest value as it's always paired with some value less than it
+\project_{value}(T)
+\diff
+\project_{value} (
+    \select_{value < value2}(
+      \project_{value}(T)
+      \cross
+      \rename_{value2}(\project_{value}(T))
+    )
+)
+
+(\project_{age} Person) \diff
+
+
+(\project_{age} Person) \diff
+(\project_{age} (\select_{age < age2} (\project_{age} Person \cross \rename_{age2}(\project_{age} Person))));
+
+
+(\project_{age} (\select_{pizza='mushroom'} (Eats \join Person)))
+
+
+(\project_{age} (\project_{age} (\select_{pizza='mushroom'} (Eats \join Person)))) \diff (\project_{age} (\select_{age < age2} (\project_{age} (\project_{age} (\select_{pizza='mushroom'} (Eats \join Person))) \cross \rename_{age2}(\project_{age} (\project_{age} (\select_{pizza='mushroom'} (Eats \join Person)))))));
+
+===
+
+Q8: Find all pizzerias that serve only pizzas eaten by people over 30. 
+Answer: (\project_{pizzeria} ((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats))))) 
+\diff 
+(\project_{pizzeria} ((\project_{pizza} Serves \diff ((\project_{pizza} (\select_{age > 30} (Person \join Eats))))) \join Serves)); 
+
+\project_{pizzeria} Serves \union 
+
+
+# Pizza eaten by only people over 30
+((\project_{pizza} (\select_{age > 30} (Person \join Eats)) \diff (\project_{pizza} (\select_{age <= 30} (Person \join Eats)));
+
+\project_{pizza} ((
+	\select_{age > 30} Person) 
+		\join Eats)
+\diff
+\project_{pizza} ((
+	\select_{age <= 30} Person)
+		\join Eats);
+
+# Pizza eaten by ppl over 30
+\project_{pizza} (\select_{age > 30} (Person \join Eats));
+
+# Pizzerias for people over 30
+\project_{pizzeria, age, name} (\select_{age > 30} (Person \join Frequents));
+
+# Pizzerias for people under 30
+\project_{pizzeria, age, name} (\select_{age <= 30} (Person \join Frequents));
+
+(\project_{pizzeria} (\select_{age > 30} (Person \join Frequents))) \diff (\project_{pizzeria} (\select_{age <= 30} (Person \join Frequents)));
+
+\project_{pizzeria} (\select_{pizza=((\project_{pizza} (\select_{age > 30} (Person \join Eats)) \diff (\project_{pizza} (\select_{age <= 30} (Person \join Eats))))) } Serves);
+
+# Pizzas eaten by ppl over 30
+\rename_{noms} (\project_{pizza} (\select_{age > 30} (Person \join Eats)));
+
+(\select_{pizzeria} Serves) \diff (\project_{pizzeria} (\select_{pizza not like 'c%' and pizza not like 'sup%'} Serves));
+
+(\project_{pizza} (\select_{age > 30} (Person \join Eats))) \cross Serves;
+
+ \intersect (\rename_{noms} (\project_{pizza} (\select_{age > 30} (Person \join Eats))));
+
+(\rename_{noms} (\project_{pizza} (\select_{age > 30} (Person \join Eats)))) \intersect (\select_{pizza <= noms} Serves);
+
+
+(\project_{pizzeria} Serves \diff (\project_{pizzeria} (Serves \join Serves)) \diff (\select_{age > 30} Person);
+
+(\select_{age > 30} Person \join Eats
+
+
+
+
+serves table = ? / (pizzas eaten by people over 30)
+
+General form: α ÷ β = (π(A−B) (α)) − (π (A−B)) ((π(A−B) (α)) × β) − α)
+p:	 pno pname color weight city
+spj: sno pno jno qty
+need schema α: sno pno; β: pno to answer the question
+α ← π(sno,pno) (SPJ))               # Serves table
+β ← π(pno) (σ(weight=17) (P))       # pizza eaten by ppl > 30
+
+
+	(\project_{pizzeria, pizza1}
+	(\select_{pizza=pizza1} (\rename_{pizza, pizzeria, pizza1, price} ((\project_{pizza} (\select_{age > 30} (Person \join Eats)) \cross Serves))))) 
+\cross 
+	(\project_{pizzeria, pizza1}(\select_{pizza=pizza1}(\rename_{pizza, pizzeria, pizza1, price} ((\project_{pizza} (\select_{age > 30} (Person \join Eats)) \cross Serves)))));
+
+(\project_{pizzeria} Serves) \cross (\project_{pizza} Serves) \diff (\project_{pizzeria, pizza} Serves);
+
+
+Find all pizzerias that serve only pizzas eaten by people over 30
+
+select pizzerias from Serves 
+where Serves.pizza in (
+	select pizza where age > 30 from Person
+	join Eats on Person.name=Eats.name
+	)
+
+(\project_{pizzeria, pizza} Serves) \join_{pizza < noms} (\rename_{noms} (\project_{pizza} (\select_{age > 30} (Person \join Eats))));
+
+(((\project_{pizzeria} Serves) \cross (\project_{pizza} (\select_{age > 30} (Person \join Eats)))) \intersect (\project_{pizzeria, pizza} Serves)); 
+
+\intersect (\project_{pizzeria} (\select_{age > 30} (Person \join Frequents)));
+
+
+r1 = (\project_{pizzeria, pizza} Serves)
+r2 = (\project_{pizza} (\select_{age > 30} (Person \join Eats)));
+-------
+Take 2:
+Q: Find all pizzerias that serve only pizzas eaten by people over 30.
+A:
+
+General form: α ÷ β = (π(A−B) (α)) − (π (A−B)) ((π(A−B) (α)) × β) − α)
+p:	 pno pname color weight city
+spj: sno pno jno qty
+need schema α: sno pno; β: pno to answer the question
+α ← π(sno,pno) (SPJ))               # Serves table
+β ← π(pno) (σ(weight=17) (P))       # pizza eaten by ppl > 30
+
+α ← π(pizzeria, pizza) (Serves))
+β ← π(pizza) (σ(age >30) (Person \join Eats))
+
+α ← (\project_{pizzeria, pizza} (Serves));
+β ← (\project_{pizza} (\select_{age > 30} (Person \join Eats)));
+
+(α) - (((α) x (β)) - (α))
+
+
+(α) - (((α) x (β)) - (α))
+
+(\project_{pizzeria, pizza} (Serves)) \diff (((\project_{pizzeria} (Serves)) \cross (\project_{pizza} (\select_{age > 30} (Person \join Eats)))) \diff ((\project_{pizzeria, pizza} (Serves))));
+-------
+Take 3:
+Q: Find all pizzerias that serve only pizzas eaten by people over 30
+Q: Find all pizzerias that serve only cheese and supreme
+A: (\project_{pizzeria} ((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats))))) 
+\diff 
+(\project_{pizzeria} ((\project_{pizza} Serves \diff ((\project_{pizza} (\select_{age > 30} (Person \join Eats))))) \join Serves));
+
+? \operation |cheese | = |Chicago Pizza|
+             |supreme|
+
+             |cheese | = \project_{pizzeria} |Chicago Pizza|cheese|supreme|
+             |supreme| 
+
+Semijoin: E1 ⋉ E2 = π(schema(E1)) (E1 ⋈ E2)
+
+E1 = (\project_{pizza} (\select_{age > 30} (Person \join Eats)))
+E2 = (\project_{pizzeria} (Serves))
+
+π(schema(E1)) (E1 ⋈ E2)
+
+\project_{pizzeria} ((\project_{pizza} (\select_{age > 30} (Person \join Eats))) \join (\project_{pizzeria, pizza} (Serves)))
+
+adding an antijoin (E1 - (E1 ⋉ E2)):
+((\project_{pizza} (\select_{age > 30} (Person \join Eats)))) \diff (\project_{pizzeria} ((\project_{pizza} (\select_{age > 30} (Person \join Eats))) \join (\project_{pizzeria, pizza} (Serves))));
+
+# Pizzas which are not served in each pizzeria
+\project_{pizzeria, pizza} ((\project_{pizzeria} Serves \cross \project_{pizza} Serves) \diff (\project_{pizzeria,pizza} Serves))
+
+((\project_{pizzeria, pizza} (Serves)) \join (\rename_{pizzeria,pizza1} (\project_{pizzeria, pizza} (Serves)))) \join (\rename_{pizzeria,pizza} (\project_{pizzeria, pizza} (Serves)));
+
+(\project_{pizza} (\select_{age > 30} (Person \join Eats))) \join (\rename_{\project_{pizza} (\select_{age > 30} (Person \join Eats)));
+
+(\project_{pizza} (\select_{age > 30} (Person \join Eats))) \intersect (\project_{pizza} (Serves));
+
+((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats)))) \diff (\project_{pizzeria, pizza} (Serves)); 
+
+-------
+Take 4:
+
+# Every pizzeria that serves cheese or supreme
+(\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats)));
+
+# Every pizzeria that serves neither cheese nor supreme
+(\project_{pizzeria, pizza} (\select_{pizza != 'cheese' and pizza != 'supreme'} (Serves)))
+
+# Every pizza but the pizzas that people over 30 eat
+\project_{pizza} Serves \diff ((\project_{pizza} (\select_{age > 30} (Person \join Eats))));
+
+# Every pizzeria that serves pizzas that people under 30 eat
+(\project_{pizzeria} ((\project_{pizza} Serves \diff ((\project_{pizza} (\select_{age > 30} (Person \join Eats))))) \join Serves));
+
+
+# Every pizzeria that serves a pizza eaten by people over 30 diff with Every pizzeria that serves pizzas other than those eaten by people over 30 -- gives the correct answer
+(\project_{pizzeria} ((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats))))) 
+\diff 
+(\project_{pizzeria} (\project_{pizzeria, pizza} (\select_{pizza != 'cheese' and pizza != 'supreme'} (Serves))));
+
+# Every pizzeria that serves a pizza eaten by people over 30 diff with Every pizzeria that serves pizzas other than those eaten by people over 30 -- gives the correct answer!!
+(\project_{pizzeria} ((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats))))) 
+\diff 
+(\project_{pizzeria} ((\project_{pizza} Serves \diff ((\project_{pizza} (\select_{age > 30} (Person \join Eats))))) \join Serves));
+# Reformatted for the interpreter
+(\project_{pizzeria} ((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats))))) \diff (\project_{pizzeria} ((\project_{pizza} Serves \diff ((\project_{pizza} (\select_{age > 30} (Person \join Eats))))) \join Serves));
+
+
+===
+
+Q9: Find all pizzerias that serve every pizza eaten by people over 30. 
+Answer: (\project_{pizzeria} ((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats))))) \diff (\project_{pizzeria} (((\project_{pizzeria} ((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats))))) \cross \project_{pizza} ((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats))))) \diff (\project_{pizzeria,pizza} ((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats)))))));
+
+Chicago Pizza          cheese
+New York Pizza         supreme
+Pizza Hut
+
+# Pizzerias that serve any pizza people over 30 eat
+((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats))));
+
+# Every pizzeria that serves both cheese and supreme
+(\project_{pizzeria} (\select_{pizza = 'supreme'} (Serves)))
+\intersect
+(\project_{pizzeria} (\select_{pizza = 'cheese'} (Serves)));
+
+# Any pizzeria that does not serve cheese
+(\project_{pizzeria} Serves) \diff (\project_{pizzeria} (\select_{pizza = 'cheese'} Serves));
+
+# Any pizzeria that does not serve supreme
+(\project_{pizzeria} Serves) \diff (\project_{pizzeria} (\select_{pizza = 'supreme'} Serves));
+
+# Pizzas which are not served in each pizzeria
+\project_{pizzeria, pizza} ((\project_{pizzeria} Serves \cross \project_{pizza} Serves) \diff (\project_{pizzeria,pizza} Serves))
+
+# Pizzas which are not served in each pizzeria for people over 30
+\project_{pizzeria, pizza} ((\project_{pizzeria} Serves \cross \project_{pizza} Serves) \diff (\project_{pizzeria,pizza} (((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats)))))))
+
+
+# Pizzerias that serve any pizza people over 30 eat 
+(\project_{pizzeria} ((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats)))))
+# minus
+\diff
+(\project_{pizzeria} 
+# All the possible combos of pizzerias and pizzas people over 30 eat minus pizzerias that serve pizzas people over 30 don't eat
+(((\project_{pizzeria} ((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats))))) \cross \project_{pizza} ((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats))))) 
+\diff 
+(\project_{pizzeria,pizza} ((\project_{pizzeria, pizza} (Serves)) \join (\project_{pizza} (\select_{age > 30} (Person \join Eats)))))));
+
