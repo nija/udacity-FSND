@@ -28,21 +28,82 @@ create table players (
 
 
 --table matches
---match_id		player1_id		player2_id		winner_id		(tournament_id)
+--match_id		tournament_id		winner_id		loser_id
 create table matches (
 	match_id serial primary key,
-	player1_id integer,
-	player2_id integer,
-	winner_id integer 
+	winner_id integer,
+	loser_id integer
 	);
+create table matches (
+	match_id serial primary key,
+	tournament_id integer,
+	winner_id integer,
+	loser_id integer
+	);
+
+
+
+select * from players left join matches on matches.winner_id = players.player_id or loser_id = players.player_id;
+
+select winner_id, count(winner_id) as wins, count(loser_id) as losses from matches group by winner_id order by wins desc;
+
+select winner_id, count(winner_id) as wins, count(loser_id) as losses, ((select count(winner_id) from matches) + (select count(loser_id) from matches)) as total from matches group by winner_id order by wins desc;
+
+select winner_id, count(winner_id) as wins from matches group by winner_id
+union all
+select loser_id, count(loser_id) as losses from matches group by loser_id;
+ 
+
+
+
+
 
 -- view num_wins_per_player, query links wins per player
 -- TODO: test the query before embedding it in a view
 create or replace view num_wins_per_player (player_name, wins) as
-	select players.player_name,count(*) as wins
+	select players.player_id, players.player_name, count(*) as total_matches, (select count(winner_id) from matches group by winner_id) as wins
 	from players
 	join matches on matches.winner_id = players.player_id
-	group by players.player_id;
+	group by matches.winner_id
+	order by wins desc;
+select winner_id, count(*) from matches group by winner_id order by count(*) desc;
+select players.player_id, players.player_name, 
+player1_id.matches, player2_id.matches, winner_id.matches 
+from players, matches
+	join matches on matches.winner_id = players.player_id
+	group by matches.winner_id
+	order by wins desc;
+
+select (select player_id, player_name, match_id, player1_id, player2_id, winner_id
+from players
+left join matches on matches.player1_id = players.player_id
+order by player_id),
+(select player_id, player_name, match_id, player1_id, player2_id, winner_id
+from players
+left join matches on matches.player2_id = players.player_id
+order by player_id)
+where match_id = match_id
+
+
+select player_id, player_name, match_id, player1_id, player2_id, winner_id, count(distinct winner_id) as wins
+from players
+left join matches on matches.winner_id = players.player_id
+group by players.player_id
+
+create or replace view num_wins_per_player (player_id, wins) as
+	select winner_id, count(winner_id) 
+	from matches 
+	group by winner_id 
+	order by count(winner_id) desc;
+
+create or replace view temp_table_for_norm (player_id, player_name, match_id, player1_id, player2_id, winner_id) as
+
+
+-- Returns a list of tuples, each of which contains (id, name, wins, matches):
+--        id: the player's unique id (assigned by the database)
+--        name: the player's full name (as registered)
+--        wins: the number of matches the player has won
+--        matches: the number of matches the player has played
 -- TODO: [EC] view num_wins_per_player_per_tournament
 --		 query links wins per player per tournament, needs a having tournament_id = ''
 -- TODO: test the query before embedding it in a view
